@@ -1,5 +1,7 @@
  import React, { useState } from 'react';
 import Header from './Header';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Boarding() {
   const websiteTypes = [
@@ -85,10 +87,6 @@ export default function Boarding() {
     const nextStep = () => setCurrentStep(prev => prev + 1);
     const prevStep = () => setCurrentStep(prev => prev - 1);
 
-    const handleSubmit = () => {
-      alert('Your request has been submitted successfully! We will contact you soon.');
-    };
-
     const getSelectedFeaturesNames = () => {
       return selectedFeatures.map(id => {
         const feature = features.find(f => f.id === id);
@@ -96,16 +94,44 @@ export default function Boarding() {
       });
     };
 
+    const handleSubmit = async () => {
+      const payload = {
+        websiteType: selectedWebsite?.name || customWebsiteType,
+        buildMethod,
+        features: getSelectedFeaturesNames(),
+        budget,
+        deadline
+      };
+
+      try {
+        const response = await fetch('http://localhost:3000/api/onboarding', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          toast.success('🎉 Request submitted successfully!');
+          // Reset form if desired:
+          // setCurrentStep(1); setSelectedWebsite(null); ...
+        } else {
+          toast.error(` ${result.message || 'Submission failed'}`);
+        }
+      } catch (error) {
+        console.error('Submit error:', error);
+        toast.error(' Something went wrong. Please try again.');
+      }
+    };
+
     const isWebsiteTypeSelected = selectedWebsite || customWebsiteType.trim() !== '';
 
     return (
-      <div className="dashboard-container" >
-
-     
+      <div className="dashboard-container">
         <div className="header" style={{ marginTop: '9rem' }}>
           <h1>Website Configuration Dashboard</h1>
           <p>Select the perfect setup for your new website</p>
-           
         </div>
 
         <div className="stepper">
@@ -180,12 +206,8 @@ export default function Boarding() {
                 </div>
               </div>
               <div className="buttons">
-                <button className="btn btn-back" onClick={prevStep}>
-                  Back
-                </button>
-                <button className="btn btn-next" onClick={nextStep} disabled={!buildMethod}>
-                  Next
-                </button>
+                <button className="btn btn-back" onClick={prevStep}>Back</button>
+                <button className="btn btn-next" onClick={nextStep} disabled={!buildMethod}>Next</button>
               </div>
             </>
           )}
@@ -210,12 +232,8 @@ export default function Boarding() {
                 ))}
               </div>
               <div className="buttons">
-                <button className="btn btn-back" onClick={prevStep}>
-                  Back
-                </button>
-                <button className="btn btn-next" onClick={nextStep}>
-                  Next
-                </button>
+                <button className="btn btn-back" onClick={prevStep}>Back</button>
+                <button className="btn btn-next" onClick={nextStep}>Next</button>
               </div>
             </>
           )}
@@ -235,7 +253,6 @@ export default function Boarding() {
                   value={budget}
                   onChange={handleBudgetChange}
                 />
-                <div className="slider-value">${budget}</div>
               </div>
               <div>
                 <label htmlFor="deadline">Project Deadline:</label>
@@ -248,12 +265,8 @@ export default function Boarding() {
                 />
               </div>
               <div className="buttons">
-                <button className="btn btn-back" onClick={prevStep}>
-                  Back
-                </button>
-                <button className="btn btn-next" onClick={nextStep}>
-                  Next
-                </button>
+                <button className="btn btn-back" onClick={prevStep}>Back</button>
+                <button className="btn btn-next" onClick={nextStep}>Next</button>
               </div>
             </>
           )}
@@ -272,14 +285,8 @@ export default function Boarding() {
               <div className="summary-item">
                 <h3>Selected Features</h3>
                 {selectedFeatures.length > 0 ? (
-                  <ul>
-                    {getSelectedFeaturesNames().map((name, index) => (
-                      <li key={index}>{name}</li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p>No additional features selected</p>
-                )}
+                  <ul>{getSelectedFeaturesNames().map((name, index) => (<li key={index}>{name}</li>))}</ul>
+                ) : <p>No additional features selected</p>}
               </div>
               <div className="summary-item">
                 <h3>Budget</h3>
@@ -290,12 +297,8 @@ export default function Boarding() {
                 <p>{deadline || 'No deadline set'}</p>
               </div>
               <div className="buttons">
-                <button className="btn btn-back" onClick={prevStep}>
-                  Back
-                </button>
-                <button className="btn btn-submit" onClick={handleSubmit}>
-                  Submit Request
-                </button>
+                <button className="btn btn-back" onClick={prevStep}>Back</button>
+                <button className="btn btn-submit" onClick={handleSubmit}>Submit Request</button>
               </div>
             </>
           )}
@@ -307,6 +310,7 @@ export default function Boarding() {
   return (
     <>
       <Header />
+      <ToastContainer position="top-right" autoClose={3000} />
       <section>
         <div className='App-boarding-header'>
           <div style={{ paddingLeft: '2rem' }}>
