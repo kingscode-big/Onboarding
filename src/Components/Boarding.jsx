@@ -101,10 +101,10 @@ export default function Boarding() {
         features: getSelectedFeaturesNames(),
         budget,
         deadline
-      };
+      };  
 
       try {
-        const response = await fetch('http://localhost:3000/api/onboarding', {
+        const response = await fetch('https://onboardback.onrender.com/api/onboarding', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -114,8 +114,7 @@ export default function Boarding() {
 
         if (response.ok) {
           toast.success('🎉 Request submitted successfully!');
-          // Reset form if desired:
-          // setCurrentStep(1); setSelectedWebsite(null); ...
+         
         } else {
           toast.error(` ${result.message || 'Submission failed'}`);
         }
