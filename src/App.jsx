@@ -4,6 +4,7 @@
   import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css'
 import Boarding from './Components/Boarding.jsx';
+import BrandingForm from './Components/BrandingForm.jsx';
 function App() {
  
 
@@ -14,6 +15,7 @@ function App() {
   <Routes>
     <Route path="/" element={<Boarding />} />
     <Route path="/boarding" element={<Boarding/>} />
+    <Route path="/brandingForm" element={<BrandingForm/>} />
     
   </Routes>
 </BrowserRouter>

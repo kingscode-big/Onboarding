@@ -5,34 +5,10 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export default function Boarding() {
   const websiteTypes = [
-    {
-      id: 1,
-      name: 'E-commerce',
-      description: 'Online store with product listings, cart, and checkout',
-      image: 'ecom.gif',
-      alt: 'E-commerce website with product grid and shopping cart'
-    },
-    {
-      id: 2,
-      name: 'Portfolio',
-      description: 'Showcase your work with a clean portfolio website',
-      image: 'portifolio.gif',
-      alt: 'Artist portfolio showcase with image gallery'
-    },
-    {
-      id: 3,
-      name: 'Corporate',
-      description: 'Professional business website for your company',
-      image: 'pott.gif',
-      alt: 'Corporate website with professional design and team section'
-    },
-    {
-      id: 4,
-      name: 'Blog',
-      description: 'Content-rich website with articles and posts',
-      image: 'blog.gif',
-      alt: 'Blog website with featured articles and clean typography'
-    }
+    { id: 1, name: 'E-commerce', description: 'Online store with product listings, cart, and checkout', image: 'ecom.gif', alt: 'E-commerce website' },
+    { id: 2, name: 'Portfolio', description: 'Showcase your work with a clean portfolio website', image: 'portifolio.gif', alt: 'Portfolio website' },
+    { id: 3, name: 'Corporate', description: 'Professional business website for your company', image: 'pott.gif', alt: 'Corporate website' },
+    { id: 4, name: 'Blog', description: 'Content-rich website with articles and posts', image: 'blog.gif', alt: 'Blog website' }
   ];
 
   const features = [
@@ -54,6 +30,7 @@ export default function Boarding() {
     const [selectedFeatures, setSelectedFeatures] = useState([]);
     const [budget, setBudget] = useState(5000);
     const [deadline, setDeadline] = useState('');
+    const [email, setEmail] = useState('');
 
     const steps = [
       { id: 1, label: 'Website Type' },
@@ -69,39 +46,35 @@ export default function Boarding() {
     };
 
     const handleFeatureToggle = (featureId) => {
-      if (selectedFeatures.includes(featureId)) {
-        setSelectedFeatures(selectedFeatures.filter(id => id !== featureId));
-      } else {
-        setSelectedFeatures([...selectedFeatures, featureId]);
-      }
+      setSelectedFeatures(prev =>
+        prev.includes(featureId)
+          ? prev.filter(id => id !== featureId)
+          : [...prev, featureId]
+      );
     };
 
-    const handleBudgetChange = (e) => {
-      setBudget(parseInt(e.target.value));
-    };
-
-    const handleDateChange = (e) => {
-      setDeadline(e.target.value);
-    };
+    const handleBudgetChange = (e) => setBudget(parseInt(e.target.value));
+    const handleDateChange = (e) => setDeadline(e.target.value);
+    const isWebsiteTypeSelected = selectedWebsite || customWebsiteType.trim() !== '';
+    const getSelectedFeaturesNames = () => selectedFeatures.map(id => features.find(f => f.id === id)?.name || '');
 
     const nextStep = () => setCurrentStep(prev => prev + 1);
     const prevStep = () => setCurrentStep(prev => prev - 1);
 
-    const getSelectedFeaturesNames = () => {
-      return selectedFeatures.map(id => {
-        const feature = features.find(f => f.id === id);
-        return feature ? feature.name : '';
-      });
-    };
-
     const handleSubmit = async () => {
+      if (!email || !/\S+@\S+\.\S+/.test(email)) {
+        toast.error("Please enter a valid email address.");
+        return;
+      }
+
       const payload = {
         websiteType: selectedWebsite?.name || customWebsiteType,
         buildMethod,
         features: getSelectedFeaturesNames(),
         budget,
-        deadline
-      };  
+        deadline,
+        email
+      };
 
       try {
         const response = await fetch('https://onboardback.onrender.com/api/onboarding', {
@@ -113,18 +86,15 @@ export default function Boarding() {
         const result = await response.json();
 
         if (response.ok) {
-          toast.success('🎉 Request submitted successfully!');
-         
+          toast.success('🎉 Proposal sent to your email!');
         } else {
-          toast.error(` ${result.message || 'Submission failed'}`);
+          toast.error(result.message || 'Submission failed');
         }
       } catch (error) {
         console.error('Submit error:', error);
-        toast.error(' Something went wrong. Please try again.');
+        toast.error('Something went wrong. Please try again.');
       }
     };
-
-    const isWebsiteTypeSelected = selectedWebsite || customWebsiteType.trim() !== '';
 
     return (
       <div className="dashboard-container">
@@ -177,9 +147,7 @@ export default function Boarding() {
               </div>
               <div className="buttons">
                 <div></div>
-                <button className="btn btn-next" onClick={nextStep} disabled={!isWebsiteTypeSelected}>
-                  Next
-                </button>
+                <button className="btn btn-next" onClick={nextStep} disabled={!isWebsiteTypeSelected}>Next</button>
               </div>
             </>
           )}
@@ -189,19 +157,13 @@ export default function Boarding() {
               <h2>Choose Build Method</h2>
               <p>Would you prefer a CMS or a custom coded website?</p>
               <div className="card-container">
-                <div
-                  className={`card ${buildMethod === 'CMS' ? 'selected' : ''}`}
-                  onClick={() => setBuildMethod('CMS')}
-                >
+                <div className={`card ${buildMethod === 'CMS' ? 'selected' : ''}`} onClick={() => setBuildMethod('CMS')}>
                   <h3>CMS (Content Management System)</h3>
-                  <p>Use platforms like WordPress, Shopify, or Wix. Quicker and cost-effective.</p>
+                  <p>Use platforms like WordPress, Shopify, or Wix.</p>
                 </div>
-                <div
-                  className={`card ${buildMethod === 'Code' ? 'selected' : ''}`}
-                  onClick={() => setBuildMethod('Code')}
-                >
+                <div className={`card ${buildMethod === 'Code' ? 'selected' : ''}`} onClick={() => setBuildMethod('Code')}>
                   <h3>Custom Code</h3>
-                  <p>Fully custom-built using frameworks like React, Laravel, or Node.js.</p>
+                  <p>Built with React, Laravel, Node.js, etc.</p>
                 </div>
               </div>
               <div className="buttons">
@@ -214,7 +176,7 @@ export default function Boarding() {
           {currentStep === 3 && (
             <>
               <h2>Select Features</h2>
-              <p>Choose the additional features you need for your website:</p>
+              <p>Choose the additional features you need:</p>
               <div className="feature-list">
                 {features.map(feature => (
                   <div key={feature.id} className="feature-item">
@@ -294,6 +256,17 @@ export default function Boarding() {
               <div className="summary-item">
                 <h3>Deadline</h3>
                 <p>{deadline || 'No deadline set'}</p>
+              </div>
+              <div className="summary-item">
+                <h3>Your Email</h3>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="yourname@example.com"
+                  style={{ padding: '10px', width: '100%', borderRadius: '5px', marginTop: '0.5rem' }}
+                  required
+                />
               </div>
               <div className="buttons">
                 <button className="btn btn-back" onClick={prevStep}>Back</button>
