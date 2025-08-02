@@ -8,14 +8,14 @@ import BrandingForm from './Components/BrandingForm.jsx';
 function App() {
  
 
-  return (
+  return (  
     <>
 
 <BrowserRouter>
   <Routes>
     <Route path="/" element={<Boarding />} />
     <Route path="/boarding" element={<Boarding/>} />
- <Route path="/BrandingForm/:id" element={<BrandingForm />} />
+    <Route path="/branding" element={<BrandingForm />} />
     
   </Routes>
 </BrowserRouter>

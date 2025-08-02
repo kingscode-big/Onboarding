@@ -26,7 +26,7 @@ import { Link } from 'react-router-dom'
                 </li>
                
                 <li className='App-lists'>
-                  <Link to="/BrandingForm" className="nav-link" style={{  fontSize:'2rem'}} ><  MdGroups  /></Link>
+                  <Link to="/branding" className="nav-link" style={{  fontSize:'2rem'}} ><  MdGroups  /></Link>
                 </li>
                 <li className='App-lists'>
                   <Link to="/preview" className="nav-link" style={{  fontSize:'2rem'}} >< FaEye /></Link>
