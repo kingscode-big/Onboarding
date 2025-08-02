@@ -15,7 +15,7 @@ function App() {
   <Routes>
     <Route path="/" element={<Boarding />} />
     <Route path="/boarding" element={<Boarding/>} />
-    <Route path="/brandingForm" element={<BrandingForm/>} />
+ <Route path="/BrandingForm/:id" element={<BrandingForm />} />
     
   </Routes>
 </BrowserRouter>
