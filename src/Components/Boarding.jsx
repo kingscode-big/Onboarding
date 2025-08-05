@@ -3,6 +3,7 @@ import Header from './Header';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+
 export default function Boarding() {
   const websiteTypes = [
     { id: 1, name: 'E-commerce', description: 'Online store with product listings, cart, and checkout', image: 'ecom.gif', alt: 'E-commerce website' },
@@ -86,7 +87,7 @@ export default function Boarding() {
         const result = await response.json();
 
         if (response.ok) {
-          toast.success('🎉 Proposal sent to your email!');
+          toast.success('🎉  Submission Success Check your Email  for Approval');
         } else {
           toast.error(result.message || 'Submission failed');
         }

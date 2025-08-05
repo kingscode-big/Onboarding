@@ -1,5 +1,6 @@
  import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
+import Header from './Header';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
  
@@ -56,6 +57,11 @@ export default function BrandingForm() {
   };
 
   return (
+    <>
+    <Header />
+        {/* <div className="dashboard-container">
+    </div> */}
+    
     <div className="branding-form-container">
       <h2 className="form-title">Provide Your Branding Details</h2>
       <form onSubmit={handleSubmit} encType="multipart/form-data" className="branding-form">
@@ -116,5 +122,6 @@ export default function BrandingForm() {
       </form>
       <ToastContainer position="top-right" autoClose={3000} />
     </div>
+    </>
   );
 }
